@@ -34,7 +34,11 @@ class TodoController extends Controller
         return response($todo, 201);
     }
     public function updateAll(Request $request){
-        
+        $data = $request->validate([
+            'completed' => 'required|boolean',
+        ]);
+        Todo::query()->update($data);
+        return response('Updated', 200);
     }
     public function destroy(Todo $todo)
     {
