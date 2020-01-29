@@ -10,12 +10,12 @@
     export default {
         name: 'todo-filtered',
         computed: {
-            filter() {
+            filter(){
                 return this.$store.state.filter
             }
         },
         methods: {
-            changeFilter(filter) {
+            changeFilter(filter){
                 this.$store.dispatch('updateFilter', filter)
             }
         }

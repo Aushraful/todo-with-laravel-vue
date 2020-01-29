@@ -12,7 +12,7 @@
                                    :todo="todo"
                                    :checkAll="!anyRemaining"
                         >
-                            &lt;!&ndash;items are being passed from TodoItem.vue&ndash;&gt;
+                            <!--items are being passed from TodoItem.vue-->
                         </todo-item>
                         <div class="extra-container">
                             <todo-check-all></todo-check-all>
@@ -35,6 +35,7 @@
     import TodoCheckAll from './TodoCheckAll'
     import TodoFiltered from './TodoFiltered'
     import TodoClearCompleted from './TodoClearCompleted'
+
     export default {
         name: 'todo-list',
         components: {
@@ -44,31 +45,37 @@
             TodoFiltered,
             TodoClearCompleted,
         },
-        data() {
+        data () {
             return {
                 newTodo: '',
                 idForTodo: 3,
+                beforeEditCache: '',
             }
+        },
+        created(){
+            this.$store.dispatch('retrieveTodos');
         },
         computed: {
-            anyRemaining() {
-                return this.$store.getters.anyRemaining
+            anyRemaining(){
+                return  this.$store.getters.anyRemaining
             },
-            todosFiltered() {
+            todosFiltered(){
                 return this.$store.getters.todosFiltered
-            }
+            },
         },
         methods: {
-            addTodo() {
-                if (this.newTodo.trim().length == 0) {
+            addTodo(){
+                if (this.newTodo.trim().length == 0){
                     return
                 }
+
                 this.$store.dispatch('addTodo', {
                     id: this.idForTodo,
-                    title: this.newTodo,
-                })
-                this.newTodo = ''
-                this.idForTodo++
+                    title: this.newTodo
+                });
+
+                this.newTodo = '';
+                this.idForTodo++;
             },
         }
     }

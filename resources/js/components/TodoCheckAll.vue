@@ -17,7 +17,7 @@
             }
         },
         methods: {
-            allChecked() {
+            allChecked(){
                 this.$store.dispatch('checkAll', event.target.checked)
             }
         }

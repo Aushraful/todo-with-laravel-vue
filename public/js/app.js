@@ -1947,6 +1947,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'todo-clear-completed',
   computed: {
@@ -2054,12 +2057,6 @@ __webpack_require__.r(__webpack_exports__);
       'beforeEditCache': '',
       showOptions: false
     };
-  },
-  created: function created() {
-    eventBus.$on('pluralize', this.handlePluralize);
-  },
-  beforeDestroy: function beforeDestroy() {
-    eventBus.$off('pluralize', this.handlePluralize);
   },
   watch: {
     checkAll: function checkAll() {
@@ -2189,8 +2186,12 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       newTodo: '',
-      idForTodo: 3
+      idForTodo: 3,
+      beforeEditCache: ''
     };
+  },
+  created: function created() {
+    this.$store.dispatch('retrieveTodos');
   },
   computed: {
     anyRemaining: function anyRemaining() {
@@ -37621,11 +37622,13 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm.showClearCompletedButton
-    ? _c("button", { on: { click: _vm.clearCompleted } }, [
-        _vm._v("Clear Completed")
-      ])
-    : _vm._e()
+  return _c("div", [
+    _vm.showClearCompletedButton
+      ? _c("button", { on: { click: _vm.clearCompleted } }, [
+          _vm._v("Clear Completed")
+        ])
+      : _vm._e()
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -37872,7 +37875,9 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_vm._v(_vm._s(_vm.remaining) + " items left")])
+  return _c("div", { staticClass: "pr-2" }, [
+    _vm._v(_vm._s(_vm.remaining) + " items left")
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -37943,18 +37948,10 @@ var render = function() {
               { staticClass: "todo-item-box" },
               [
                 _vm._l(_vm.todosFiltered, function(todo) {
-                  return _c(
-                    "todo-item",
-                    {
-                      key: todo.id,
-                      attrs: { todo: todo, checkAll: !_vm.anyRemaining }
-                    },
-                    [
-                      _vm._v(
-                        "\n                        <!–items are being passed from TodoItem.vue–>\n                    "
-                      )
-                    ]
-                  )
+                  return _c("todo-item", {
+                    key: todo.id,
+                    attrs: { todo: todo, checkAll: !_vm.anyRemaining }
+                  })
                 }),
                 _vm._v(" "),
                 _c(
@@ -54679,23 +54676,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
+
 
 
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
+axios__WEBPACK_IMPORTED_MODULE_2___default.a.defaults.baseURL = 'http://127.0.0.1:8000/api';
 var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   state: {
     filter: 'all',
-    todos: [{
-      'id': 1,
-      'title': 'Finish Vue Screencast',
-      'completed': false,
-      'editing': false
-    }, {
-      'id': 2,
-      'title': 'Take over world',
-      'completed': false,
-      'editing': false
-    }]
+    todos: []
   },
   getters: {
     remaining: function remaining(state) {
@@ -54765,38 +54756,73 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       state.todos = state.todos.filter(function (todo) {
         return !todo.completed;
       });
+    },
+    retrieveTodos: function retrieveTodos(state, todos) {
+      state.todos = todos;
     }
   },
   actions: {
+    retrieveTodos: function retrieveTodos(context) {
+      axios__WEBPACK_IMPORTED_MODULE_2___default.a.get('/todos').then(function (response) {
+        context.commit('retrieveTodos', response.data); // console.log(response)
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
     addTodo: function addTodo(context, todo) {
-      setTimeout(function () {
-        context.commit('addTodo', todo);
-      }, 100);
+      axios__WEBPACK_IMPORTED_MODULE_2___default.a.post('/todos', {
+        title: todo.title,
+        completed: false
+      }).then(function (response) {
+        context.commit('addTodo', response.data); // console.log(response)
+      })["catch"](function (error) {
+        console.log(error);
+      });
     },
     updateTodo: function updateTodo(context, todo) {
-      setTimeout(function () {
-        context.commit('updateTodo', todo);
-      }, 100);
+      axios__WEBPACK_IMPORTED_MODULE_2___default.a.patch('/todo/' + todo.id, {
+        title: todo.title,
+        completed: todo.completed
+      }).then(function (response) {
+        context.commit('updateTodo', response.data); // console.log(response)
+      })["catch"](function (error) {
+        console.log(error);
+      });
     },
     deleteTodo: function deleteTodo(context, id) {
-      setTimeout(function () {
-        context.commit('deleteTodo', id);
-      }, 100);
+      axios__WEBPACK_IMPORTED_MODULE_2___default.a["delete"]('/todo/' + id).then(function (response) {
+        context.commit('deleteTodo', id); // console.log(response)
+      })["catch"](function (error) {
+        console.log(error);
+      });
     },
     checkAll: function checkAll(context, checked) {
-      setTimeout(function () {
-        context.commit('checkAll', checked);
-      }, 100);
+      axios__WEBPACK_IMPORTED_MODULE_2___default.a.patch('/todoCheckAll', {
+        completed: checked
+      }).then(function (response) {
+        context.commit('checkAll', checked); // console.log(response)
+      })["catch"](function (error) {
+        console.log(error);
+      });
     },
     updateFilter: function updateFilter(context, filter) {
-      setTimeout(function () {
-        context.commit('updateFilter', filter);
-      }, 100);
+      context.commit('updateFilter', filter);
     },
     clearCompleted: function clearCompleted(context) {
-      setTimeout(function () {
-        context.commit('clearCompleted');
-      }, 100);
+      var completed = store.state.todos.filter(function (todo) {
+        return todo.completed;
+      }).map(function (todo) {
+        return todo.id;
+      });
+      axios__WEBPACK_IMPORTED_MODULE_2___default.a["delete"]('/todoDeleteCompleted', {
+        data: {
+          todos: completed
+        }
+      }).then(function (response) {
+        context.commit('clearCompleted'); // console.log(response)
+      })["catch"](function (error) {
+        console.log(error);
+      });
     }
   }
 });

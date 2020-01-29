@@ -39,7 +39,7 @@
                 required: true,
             }
         },
-        data() {
+        data(){
             return {
                 'id': this.todo.id,
                 'title': this.todo.title,
@@ -49,14 +49,8 @@
                 showOptions: false,
             }
         },
-        created() {
-            eventBus.$on('pluralize', this.handlePluralize)
-        },
-        beforeDestroy() {
-            eventBus.$off('pluralize', this.handlePluralize)
-        },
         watch: {
-            checkAll() {
+            checkAll(){
                 this.completed = this.checkAll ? true : this.todo.completed
             }
         },
@@ -69,27 +63,29 @@
         },
         methods: {
             removeTodo(id) {
-                this.$store.dispatch('deleteTodo', id)
+                this.$store.dispatch('deleteTodo',id)
             },
-            editTodo() {
-                this.beforeEditCache = this.title
-                this.editing = true
+            editTodo(){
+                this.beforeEditCache = this.title;
+                this.editing = true;
             },
-            doneEdit() {
-                if (this.title.trim() == '') {
-                    this.title = this.beforeEditCache
+            doneEdit(){
+                if (this.title.trim() == ''){
+                    this.title = this.beforeEditCache;
                 }
-                this.editing = false
+                this.editing = false;
+
                 this.$store.dispatch('updateTodo', {
                     'id': this.id,
                     'title': this.title,
                     'completed': this.completed,
                     'editing': this.editing,
                 })
+
             },
-            cancelEdit() {
-                this.title = this.beforeEditCache
-                this.editing = false
+            cancelEdit(){
+                this.title = this.beforeEditCache;
+                this.editing = false;
             },
         }
     }
