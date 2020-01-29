@@ -1917,7 +1917,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-/* harmony default export */ __webpack_exports__["default"] = ({});
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'todo-check-all',
+  computed: {
+    anyRemaining: function anyRemaining() {
+      return this.$store.getters.anyRemaining;
+    }
+  },
+  methods: {
+    allChecked: function allChecked() {
+      this.$store.dispatch('checkAll', event.target.checked);
+    }
+  }
+});
 
 /***/ }),
 
@@ -1934,9 +1947,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({});
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'todo-clear-completed',
+  computed: {
+    showClearCompletedButton: function showClearCompletedButton() {
+      return this.$store.getters.showClearCompletedButton;
+    }
+  },
+  methods: {
+    clearCompleted: function clearCompleted() {
+      this.$store.dispatch('clearCompleted');
+    }
+  }
+});
 
 /***/ }),
 
@@ -1957,7 +1980,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-/* harmony default export */ __webpack_exports__["default"] = ({});
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'todo-filtered',
+  computed: {
+    filter: function filter() {
+      return this.$store.state.filter;
+    }
+  },
+  methods: {
+    changeFilter: function changeFilter(filter) {
+      this.$store.dispatch('updateFilter', filter);
+    }
+  }
+});
 
 /***/ }),
 
@@ -1985,7 +2020,86 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-/* harmony default export */ __webpack_exports__["default"] = ({});
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'todo-item',
+  props: {
+    todo: {
+      type: Object,
+      required: true
+    },
+    checkAll: {
+      type: Boolean,
+      required: true
+    }
+  },
+  data: function data() {
+    return {
+      'id': this.todo.id,
+      'title': this.todo.title,
+      'completed': this.todo.completed,
+      'editing': this.todo.editing,
+      'beforeEditCache': '',
+      showOptions: false
+    };
+  },
+  created: function created() {
+    eventBus.$on('pluralize', this.handlePluralize);
+  },
+  beforeDestroy: function beforeDestroy() {
+    eventBus.$off('pluralize', this.handlePluralize);
+  },
+  watch: {
+    checkAll: function checkAll() {
+      this.completed = this.checkAll ? true : this.todo.completed;
+    }
+  },
+  directives: {
+    focus: {
+      inserted: function inserted(el) {
+        el.focus();
+      }
+    }
+  },
+  methods: {
+    removeTodo: function removeTodo(id) {
+      this.$store.dispatch('deleteTodo', id);
+    },
+    editTodo: function editTodo() {
+      this.beforeEditCache = this.title;
+      this.editing = true;
+    },
+    doneEdit: function doneEdit() {
+      if (this.title.trim() == '') {
+        this.title = this.beforeEditCache;
+      }
+
+      this.editing = false;
+      this.$store.dispatch('updateTodo', {
+        'id': this.id,
+        'title': this.title,
+        'completed': this.completed,
+        'editing': this.editing
+      });
+    },
+    cancelEdit: function cancelEdit() {
+      this.title = this.beforeEditCache;
+      this.editing = false;
+    }
+  }
+});
 
 /***/ }),
 
@@ -2002,7 +2116,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-/* harmony default export */ __webpack_exports__["default"] = ({});
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'todo-remaining',
+  computed: {
+    remaining: function remaining() {
+      return this.$store.getters.remaining;
+    }
+  }
+});
 
 /***/ }),
 
@@ -2047,6 +2168,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -2060,6 +2185,34 @@ __webpack_require__.r(__webpack_exports__);
     TodoCheckAll: _TodoCheckAll__WEBPACK_IMPORTED_MODULE_2__["default"],
     TodoFiltered: _TodoFiltered__WEBPACK_IMPORTED_MODULE_3__["default"],
     TodoClearCompleted: _TodoClearCompleted__WEBPACK_IMPORTED_MODULE_4__["default"]
+  },
+  data: function data() {
+    return {
+      newTodo: '',
+      idForTodo: 3
+    };
+  },
+  computed: {
+    anyRemaining: function anyRemaining() {
+      return this.$store.getters.anyRemaining;
+    },
+    todosFiltered: function todosFiltered() {
+      return this.$store.getters.todosFiltered;
+    }
+  },
+  methods: {
+    addTodo: function addTodo() {
+      if (this.newTodo.trim().length == 0) {
+        return;
+      }
+
+      this.$store.dispatch('addTodo', {
+        id: this.idForTodo,
+        title: this.newTodo
+      });
+      this.newTodo = '';
+      this.idForTodo++;
+    }
   }
 });
 
@@ -37435,25 +37588,18 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", [
-      _c(
-        "label",
-        { staticClass: "checkAllLabel", attrs: { for: "checkAll" } },
-        [
-          _c("input", { attrs: { type: "checkbox", id: "checkAll" } }),
-          _vm._v("\n        Check All\n    ")
-        ]
-      )
+  return _c("div", [
+    _c("label", { staticClass: "checkAllLabel", attrs: { for: "checkAll" } }, [
+      _c("input", {
+        attrs: { type: "checkbox", id: "checkAll" },
+        domProps: { checked: !_vm.anyRemaining },
+        on: { change: _vm.allChecked }
+      }),
+      _vm._v("\n        Check All\n    ")
     ])
-  }
-]
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -37475,16 +37621,13 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _vm.showClearCompletedButton
+    ? _c("button", { on: { click: _vm.clearCompleted } }, [
+        _vm._v("Clear Completed")
+      ])
+    : _vm._e()
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", [_c("button", [_vm._v("Clear Completed")])])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -37506,22 +37649,48 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", [
+    _c(
+      "button",
+      {
+        class: { active: _vm.filter == "all" },
+        on: {
+          click: function($event) {
+            return _vm.changeFilter("all")
+          }
+        }
+      },
+      [_vm._v("All")]
+    ),
+    _vm._v(" "),
+    _c(
+      "button",
+      {
+        class: { active: _vm.filter == "active" },
+        on: {
+          click: function($event) {
+            return _vm.changeFilter("active")
+          }
+        }
+      },
+      [_vm._v("Active")]
+    ),
+    _vm._v(" "),
+    _c(
+      "button",
+      {
+        class: { active: _vm.filter == "completed" },
+        on: {
+          click: function($event) {
+            return _vm.changeFilter("completed")
+          }
+        }
+      },
+      [_vm._v("Completed")]
+    )
+  ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", [
-      _c("button", [_vm._v("All")]),
-      _vm._v(" "),
-      _c("button", [_vm._v("Active")]),
-      _vm._v(" "),
-      _c("button", [_vm._v("Completed")])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -37543,30 +37712,145 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "todo-item" }, [
-      _c("input", { staticClass: "checkbox", attrs: { type: "checkbox" } }),
+  return _c(
+    "div",
+    {
+      staticClass: "todo-item",
+      on: {
+        mouseover: function($event) {
+          _vm.showOptions = true
+        },
+        mouseleave: function($event) {
+          _vm.showOptions = false
+        }
+      }
+    },
+    [
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.completed,
+            expression: "completed"
+          }
+        ],
+        staticClass: "checkbox",
+        attrs: { type: "checkbox" },
+        domProps: {
+          checked: Array.isArray(_vm.completed)
+            ? _vm._i(_vm.completed, null) > -1
+            : _vm.completed
+        },
+        on: {
+          change: [
+            function($event) {
+              var $$a = _vm.completed,
+                $$el = $event.target,
+                $$c = $$el.checked ? true : false
+              if (Array.isArray($$a)) {
+                var $$v = null,
+                  $$i = _vm._i($$a, $$v)
+                if ($$el.checked) {
+                  $$i < 0 && (_vm.completed = $$a.concat([$$v]))
+                } else {
+                  $$i > -1 &&
+                    (_vm.completed = $$a
+                      .slice(0, $$i)
+                      .concat($$a.slice($$i + 1)))
+                }
+              } else {
+                _vm.completed = $$c
+              }
+            },
+            _vm.doneEdit
+          ]
+        }
+      }),
       _vm._v(" "),
       _c("div", { staticClass: "todo-item-left form-control" }, [
-        _c("span", [
-          _vm._v(
-            "\n                                Some Title\n                            "
-          )
-        ]),
-        _vm._v(" "),
-        _c("input", { attrs: { type: "text" } })
+        !_vm.editing
+          ? _c(
+              "span",
+              {
+                staticClass: "todo-item-label",
+                class: { completed: _vm.completed },
+                on: { dblclick: _vm.editTodo }
+              },
+              [
+                _vm._v(
+                  "\n                                " +
+                    _vm._s(_vm.title) +
+                    "\n                            "
+                )
+              ]
+            )
+          : _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.title,
+                  expression: "title"
+                },
+                { name: "focus", rawName: "v-focus" }
+              ],
+              staticClass: "todo-item-edit",
+              attrs: { type: "text" },
+              domProps: { value: _vm.title },
+              on: {
+                blur: _vm.doneEdit,
+                keyup: [
+                  function($event) {
+                    if (
+                      !$event.type.indexOf("key") &&
+                      _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                    ) {
+                      return null
+                    }
+                    return _vm.doneEdit($event)
+                  },
+                  function($event) {
+                    if (
+                      !$event.type.indexOf("key") &&
+                      _vm._k($event.keyCode, "esc", 27, $event.key, [
+                        "Esc",
+                        "Escape"
+                      ])
+                    ) {
+                      return null
+                    }
+                    return _vm.cancelEdit($event)
+                  }
+                ],
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.title = $event.target.value
+                }
+              }
+            })
       ]),
       _vm._v(" "),
-      _c("div", [_vm._v("\n        ×\n    ")])
-    ])
-  }
-]
+      _vm.showOptions
+        ? _c(
+            "div",
+            {
+              staticClass: "remove-item",
+              on: {
+                click: function($event) {
+                  return _vm.removeTodo(_vm.todo.id)
+                }
+              }
+            },
+            [_vm._v("\n        ×\n    ")]
+          )
+        : _vm._e()
+    ]
+  )
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -37588,7 +37872,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "pr-2" }, [_vm._v("20 items left")])
+  return _c("div", [_vm._v(_vm._s(_vm.remaining) + " items left")])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -37624,15 +37908,54 @@ var render = function() {
           { staticClass: "card todoList p-3 shadow p-3 mb-5 bg-white rounded" },
           [
             _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.newTodo,
+                  expression: "newTodo"
+                }
+              ],
               staticClass: "todo-input form-control",
-              attrs: { type: "text", placeholder: "Enter todo here" }
+              attrs: { type: "text", placeholder: "Enter todo here" },
+              domProps: { value: _vm.newTodo },
+              on: {
+                keyup: function($event) {
+                  if (
+                    !$event.type.indexOf("key") &&
+                    _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                  ) {
+                    return null
+                  }
+                  return _vm.addTodo($event)
+                },
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.newTodo = $event.target.value
+                }
+              }
             }),
             _vm._v(" "),
             _c(
               "div",
               { staticClass: "todo-item-box" },
               [
-                _c("todo-item"),
+                _vm._l(_vm.todosFiltered, function(todo) {
+                  return _c(
+                    "todo-item",
+                    {
+                      key: todo.id,
+                      attrs: { todo: todo, checkAll: !_vm.anyRemaining }
+                    },
+                    [
+                      _vm._v(
+                        "\n                        <!–items are being passed from TodoItem.vue–>\n                    "
+                      )
+                    ]
+                  )
+                }),
                 _vm._v(" "),
                 _c(
                   "div",
@@ -37656,7 +37979,7 @@ var render = function() {
                   1
                 )
               ],
-              1
+              2
             )
           ]
         )
@@ -53834,9 +54157,9 @@ module.exports = function(module) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./store */ "./resources/js/store.js");
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./store */ "./resources/js/store.js");
 /* harmony import */ var _routes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./routes */ "./resources/js/routes.js");
-/* harmony import */ var _components_TodoList__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/TodoList */ "./resources/js/components/TodoList.vue");
+/* harmony import */ var _components_TodoList__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/TodoList */ "./resources/js/components/TodoList.vue");
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
@@ -53847,9 +54170,9 @@ window.eventBus = new Vue();
 var app = new Vue({
   router: _routes__WEBPACK_IMPORTED_MODULE_1__["default"],
   el: '#app',
-  store: _store__WEBPACK_IMPORTED_MODULE_2__["store"],
+  store: _store__WEBPACK_IMPORTED_MODULE_0__["store"],
   render: function render(h) {
-    return h(_components_TodoList__WEBPACK_IMPORTED_MODULE_3__["default"]);
+    return h(_components_TodoList__WEBPACK_IMPORTED_MODULE_2__["default"]);
   }
 });
 
@@ -54326,7 +54649,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
-/* harmony import */ var _components_TodoList__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/TodoList */ "./resources/js/components/TodoList.vue");
+/* harmony import */ var _components_TodoList__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/TodoList */ "./resources/js/components/TodoList.vue");
 
 
 
@@ -54336,7 +54659,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   routes: [{
     path: '/',
     name: 'app',
-    component: _components_TodoList__WEBPACK_IMPORTED_MODULE_3__["default"]
+    component: _components_TodoList__WEBPACK_IMPORTED_MODULE_2__["default"]
   }]
 });
 /* harmony default export */ __webpack_exports__["default"] = (router);
@@ -54360,10 +54683,122 @@ __webpack_require__.r(__webpack_exports__);
 
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
 var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
-  state: {},
-  getters: {},
-  mutations: {},
-  actions: {}
+  state: {
+    filter: 'all',
+    todos: [{
+      'id': 1,
+      'title': 'Finish Vue Screencast',
+      'completed': false,
+      'editing': false
+    }, {
+      'id': 2,
+      'title': 'Take over world',
+      'completed': false,
+      'editing': false
+    }]
+  },
+  getters: {
+    remaining: function remaining(state) {
+      return state.todos.filter(function (todo) {
+        return !todo.completed;
+      }).length;
+    },
+    anyRemaining: function anyRemaining(state, getters) {
+      return getters.remaining != 0;
+    },
+    todosFiltered: function todosFiltered(state) {
+      if (state.filter == 'all') {
+        return state.todos;
+      } else if (state.filter == 'active') {
+        return state.todos.filter(function (todo) {
+          return !todo.completed;
+        });
+      } else if (state.filter == 'completed') {
+        return state.todos.filter(function (todo) {
+          return todo.completed;
+        });
+      }
+
+      return state.todos;
+    },
+    showClearCompletedButton: function showClearCompletedButton(state) {
+      return state.todos.filter(function (todo) {
+        return todo.completed;
+      }).length > 0;
+    }
+  },
+  mutations: {
+    addTodo: function addTodo(state, todo) {
+      state.todos.push({
+        id: todo.id,
+        title: todo.title,
+        completed: false,
+        editing: false
+      });
+    },
+    updateTodo: function updateTodo(state, todo) {
+      var index = state.todos.findIndex(function (item) {
+        return item.id == todo.id;
+      });
+      state.todos.splice(index, 1, {
+        'id': todo.id,
+        'title': todo.title,
+        'completed': todo.completed,
+        'editing': todo.editing
+      });
+    },
+    deleteTodo: function deleteTodo(state, id) {
+      var index = state.todos.findIndex(function (item) {
+        return item.id == id;
+      });
+      state.todos.splice(index, 1);
+    },
+    checkAll: function checkAll(state, checked) {
+      state.todos.forEach(function (todo) {
+        return todo.completed = checked;
+      });
+    },
+    updateFilter: function updateFilter(state, filter) {
+      state.filter = filter;
+    },
+    clearCompleted: function clearCompleted(state) {
+      state.todos = state.todos.filter(function (todo) {
+        return !todo.completed;
+      });
+    }
+  },
+  actions: {
+    addTodo: function addTodo(context, todo) {
+      setTimeout(function () {
+        context.commit('addTodo', todo);
+      }, 100);
+    },
+    updateTodo: function updateTodo(context, todo) {
+      setTimeout(function () {
+        context.commit('updateTodo', todo);
+      }, 100);
+    },
+    deleteTodo: function deleteTodo(context, id) {
+      setTimeout(function () {
+        context.commit('deleteTodo', id);
+      }, 100);
+    },
+    checkAll: function checkAll(context, checked) {
+      setTimeout(function () {
+        context.commit('checkAll', checked);
+      }, 100);
+    },
+    updateFilter: function updateFilter(context, filter) {
+      setTimeout(function () {
+        context.commit('updateFilter', filter);
+      }, 100);
+    },
+    clearCompleted: function clearCompleted(context) {
+      setTimeout(function () {
+        context.commit('clearCompleted');
+      }, 100);
+    }
+  }
 });
 
 /***/ }),
