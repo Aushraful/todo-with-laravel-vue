@@ -11354,3 +11354,153 @@ a.text-dark:focus {
   }
 }
 
+.checkbox {
+  cursor: pointer;
+}
+
+.checkAllLabel {
+  padding: 0 0 0 10px;
+  cursor: pointer;
+  margin-bottom: 0;
+}
+
+.todo-input::-webkit-input-placeholder {
+  padding-left: 5px;
+  color: rgba(119, 119, 119, 0.72) !important;
+}
+
+.todo-input::-moz-placeholder {
+  padding-left: 5px;
+  color: rgba(119, 119, 119, 0.72) !important;
+}
+
+.todo-input:-ms-input-placeholder {
+  padding-left: 5px;
+  color: rgba(119, 119, 119, 0.72) !important;
+}
+
+.todo-input::-ms-input-placeholder {
+  padding-left: 5px;
+  color: rgba(119, 119, 119, 0.72) !important;
+}
+
+.todo-input::placeholder {
+  padding-left: 5px;
+  color: rgba(119, 119, 119, 0.72) !important;
+}
+
+.form-control {
+  border: none;
+  box-shadow: none;
+}
+
+.form-control:focus {
+  border: none;
+  box-shadow: none;
+}
+
+.todo-input {
+  /*width: 90%;*/
+  padding: 7px 15px;
+  font-size: 12pt;
+  /*margin: 10px auto;*/
+  border: 1px solid #fbdbdb;
+  -webkit-transition: .5s !important;
+  transition: .5s !important;
+}
+
+.todo-input:focus {
+  outline: 0;
+  border: 1px solid #ffa6a6 !important;
+  color: #000;
+}
+
+.todo-item-box {
+  text-align: left;
+}
+
+.todo-item {
+  padding: 0 10px 0 10px;
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+          justify-content: space-between;
+}
+
+.todo-item:hover {
+  background: #9eedff66 !important;
+}
+
+.todo-item:hover .todo-item-left {
+  background: #9eedff00;
+}
+
+.remove-item {
+  cursor: pointer;
+  color: red;
+  font-weight: 600;
+}
+
+.todo-item-label {
+  width: 100%;
+  padding-left: 7px;
+  font-size: 12pt;
+}
+
+.todo-item-edit {
+  background: #9eedff00;
+  margin-top: 0;
+  width: 100%;
+  padding-left: 7px;
+  font-size: 12pt;
+  /*margin: 10px auto;*/
+  border: 1px solid #fbdbdb;
+  -webkit-transition: .5s !important;
+  transition: .5s !important;
+}
+
+.todo-item-edit:focus {
+  outline: 0;
+  border: 1px solid #ffa6a6 !important;
+}
+
+.completed {
+  text-decoration: line-through;
+  color: #008014;
+}
+
+.extra-container {
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+          justify-content: space-between;
+  font-size: 10pt;
+  border-top: 1px solid lightgray;
+  padding-top: 14px;
+  margin-bottom: 14px;
+}
+
+button {
+  font-size: 8pt;
+  background: #fff;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+}
+
+button:hover {
+  background: #9eedffcc;
+}
+
+button:focus {
+  outline: none;
+}
+
+.active {
+  background: #9eedffcc;
+}
+

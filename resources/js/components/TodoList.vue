@@ -7,6 +7,17 @@
                     <input type="text" class="todo-input form-control" placeholder="Enter todo here">
                     <div class="todo-item-box">
 
+                        <todo-item>
+                            <!--items are being passed from TodoItem.vue-->
+                        </todo-item>
+                        <div class="extra-container">
+                            <todo-check-all></todo-check-all>
+                            <todo-items-remaining></todo-items-remaining>
+                        </div>
+                        <div class="extra-container">
+                            <todo-filtered></todo-filtered>
+                            <todo-clear-completed></todo-clear-completed>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -15,8 +26,21 @@
 </template>
 
 <script>
-    export default {
+    import TodoItem from './TodoItem'
+    import TodoItemsRemaining from './TodoItemsRemaining'
+    import TodoCheckAll from './TodoCheckAll'
+    import TodoFiltered from './TodoFiltered'
+    import TodoClearCompleted from './TodoClearCompleted'
 
+    export default {
+        name: 'todo-list',
+        components: {
+            TodoItem,
+            TodoItemsRemaining,
+            TodoCheckAll,
+            TodoFiltered,
+            TodoClearCompleted,
+        },
     }
 </script>
 
