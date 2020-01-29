@@ -22,7 +22,7 @@ class TodoController extends Controller
     }
     public function show(Todo $todo)
     {
-
+        return Todo::find($todo);
     }
     public function update(Request $request, Todo $todo)
     {
