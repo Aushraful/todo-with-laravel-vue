@@ -9,11 +9,11 @@ class TodoController extends Controller
 {
     public function index()
     {
-
+        return Todo::all();
     }
     public function store(Request $request)
     {
-
+        
     }
     public function show(Todo $todo)
     {
