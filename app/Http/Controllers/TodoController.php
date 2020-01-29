@@ -42,7 +42,8 @@ class TodoController extends Controller
     }
     public function destroy(Todo $todo)
     {
-
+        $todo->delete();
+        return response('Deleted todo item, 200');
     }
     public function destroyCompleted(Request $request)
     {
