@@ -13,7 +13,12 @@ class TodoController extends Controller
     }
     public function store(Request $request)
     {
-        
+        $data = $request->validate([
+            'title' => 'required|string',
+            'completed' => 'required|boolean',
+        ]);
+        $todo = Todo::create($data);
+        return response($todo, 201);
     }
     public function show(Todo $todo)
     {
