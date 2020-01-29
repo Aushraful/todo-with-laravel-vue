@@ -13,6 +13,10 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('/todos', 'TodoController@index');
+Route::post('/todos', 'TodoController@store');
+Route::get('/todo/{todo}', 'TodoController@show');
+Route::patch('/todo/{todo}', 'TodoController@update');
+Route::patch('/todoCheckAll', 'TodoController@updateAll');
+Route::delete('/todo/{todo}', 'TodoController@destroy');
+Route::delete('/todoDeleteCompleted', 'TodoController@destroyCompleted');
