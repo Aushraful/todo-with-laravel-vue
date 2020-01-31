@@ -6,6 +6,7 @@ To setup the project,
 - clone the repo or download
 - run 'composer install'
 - then run 'npm install'
+- run 'php artisan key:generate'
 - create a database named 'todo_app'
 - create a .env file and change the database name
 - php artisan migrate
